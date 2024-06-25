@@ -17,17 +17,16 @@ cv2.setMouseCallback('CG Miniproject: People Counter using YOLOv8', pointer_loca
 
 cap=cv2.VideoCapture("vidp1.mp4") # put file name
 
-
 my_file = open("coco.txt", "r")
 data = my_file.read()
 class_list = data.split("\n") 
 
 count=0
-tracker=Tracker()
+tracker=Tracker(35) # 35 pixel sensitivity of tracker
 
 cy1=250
 cy2=300
-offset=15 # increase to increase the sensitivity of the counter
+offset=15 # pixel sensitivity of the counter
 
 uppeople = {}
 counteruppeople = []
