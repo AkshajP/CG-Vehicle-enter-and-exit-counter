@@ -3,11 +3,8 @@ import math
 
 class Tracker:
     def __init__(self):
-        # Store the center positions of the objects
         self.center_points = {}
-        # Keep the count of the IDs
-        # each time a new object id detected, the count will increase by one
-        self.id_count = 0
+        self.id_count = 0 # each time a new object id detected, the count will increase by one
 
 
     def update(self, objects_rect):
@@ -25,9 +22,8 @@ class Tracker:
             for id, pt in self.center_points.items():
                 dist = math.hypot(cx - pt[0], cy - pt[1])
 
-                if dist < 35:
+                if dist < 35: # if object increment by less than 35 pixels, then it is the same object
                     self.center_points[id] = (cx, cy)
-#                    print(self.center_points)
                     objects_bbs_ids.append([x, y, w, h, id])
                     same_object_detected = True
                     break
