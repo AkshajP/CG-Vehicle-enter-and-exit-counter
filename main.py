@@ -15,7 +15,7 @@ def RGB(event, x, y, flags, param):
 cv2.namedWindow('RGB')
 cv2.setMouseCallback('RGB', RGB)
 
-cap=cv2.VideoCapture('TestVideoLanes4.mp4') # put file name
+cap=cv2.VideoCapture("vidp8.mp4") # put file name
 
 
 my_file = open("coco.txt", "r")
@@ -30,9 +30,9 @@ tracker1=Tracker()
 tracker2=Tracker()
 
 
-cy1=320
-cy2=350
-offset=10 # increase to increase the sensitivity of the counter
+cy1=250
+cy2=300
+offset=15 # increase to increase the sensitivity of the counter
 
 upcar = {}
 counterupcar = []
@@ -76,10 +76,10 @@ while True:
         y2=int(row[3])
         d=int(row[5])
         c=class_list[d]
-        if 'car' in c:
+        if 'person' in c:
             car_list.append([x1,y1,x2,y2])
-        elif 'motorbike' in c or 'bicycle' in c:
-            bike_list.append([x1,y1,x2,y2])
+        # elif 'motorbike' in c or 'bicycle' in c:
+        #     bike_list.append([x1,y1,x2,y2])
         # elif 'person' in c:
         #     person_list.append([x1,y1,x2,y2])
 
@@ -110,6 +110,10 @@ while True:
                 cvzone.putTextRect(frame, str(id), (x3,y3), 1,1)
                 if counterdowncar.count(id) == 0:
                     counterdowncar.append(id)
+
+        cv2.circle(frame,(cx,cy),4,(255,0,255),-1)
+        cv2.rectangle(frame,(x3,y3),(x4,y4),(255,0,0),2)
+        cvzone.putTextRect(frame, str(id), (x3,y3), 1,1)
 
     for bbox1 in bbox_id1:
         x3,y3,x4,y4,id = bbox1
