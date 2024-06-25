@@ -6,14 +6,14 @@ import cvzone
 
 model=YOLO('yolov8m.pt') # use 8n, 8s, 8m, 8l, 8x, 8c as per GPU availability
 
-def RGB(event, x, y, flags, param):
+def pointer_location(event, x, y, flags, param):
     if event == cv2.EVENT_MOUSEMOVE :  
         colorsBGR = [x, y]
         print(colorsBGR)
         
 
-cv2.namedWindow('RGB')
-cv2.setMouseCallback('RGB', RGB)
+cv2.namedWindow('CG Miniproject: People Counter using YOLOv8')
+cv2.setMouseCallback('CG Miniproject: People Counter using YOLOv8', pointer_location)
 
 cap=cv2.VideoCapture("vidp1.mp4") # put file name
 
@@ -23,9 +23,7 @@ data = my_file.read()
 class_list = data.split("\n") 
 
 count=0
-
 tracker=Tracker()
-
 
 cy1=250
 cy2=300
@@ -44,17 +42,14 @@ while True:
     count += 1
     if count % 3 != 0:
         continue
-    frame=cv2.resize(frame,(1020,500))
-   
 
+    frame=cv2.resize(frame,(1020,500))
     results=model.predict(frame)
     
     # Extract bounding box data and move to CPU
     a = results[0].boxes.data.cpu().numpy()
-    
-    # Create a DataFrame from the numpy array
-    px = pd.DataFrame(a).astype("float")
 
+    px = pd.DataFrame(a).astype("float")
     people_list=[]
                 
     for index,row in px.iterrows():
@@ -79,9 +74,6 @@ while True:
             uppeople[id] = (cx,cy)
         if id in uppeople:
             if cy2<(cy+offset) and (cy2>cy-offset):
-                cv2.circle(frame,(cx,cy),4,(0,0,255),-1)
-                cv2.rectangle(frame,(x3,y3),(x4,y4),(255,0,255),2)
-                cvzone.putTextRect(frame, str(id), (x3,y3), 1,1)
                 if counteruppeople.count(id) == 0:
                     counteruppeople.append(id)
 
@@ -90,25 +82,23 @@ while True:
             downpeople[id] = (cx,cy)
         if id in downpeople:
             if cy1<(cy+offset) and (cy1>cy-offset):
-                cv2.circle(frame,(cx,cy),4,(255,0,255),-1)
-                cv2.rectangle(frame,(x3,y3),(x4,y4),(255,0,0),2)
-                cvzone.putTextRect(frame, str(id), (x3,y3), 1,1)
                 if counterdownpeople.count(id) == 0:
                     counterdownpeople.append(id)
 
+        ## See the people getting detected
         cv2.circle(frame,(cx,cy),4,(255,0,255),-1)
         cv2.rectangle(frame,(x3,y3),(x4,y4),(255,0,0),2)
         cvzone.putTextRect(frame, str(id), (x3,y3), 1,1)
 
     
-
     cv2.line(frame,(50,cy1),(1020,cy1),(0,255,0),2)
     cv2.line(frame,(30,cy2),(1040,cy2),(0,0,255),2)
     cvzone.putTextRect(frame, f'People coming towards:{len(counteruppeople)}', (50,60), 1,1)
     cvzone.putTextRect(frame, f'People going away:{len(counterdownpeople)}', (50,80), 1,1)
-    cv2.imshow("RGB", frame)
+    cv2.imshow("CG Miniproject: People Counter using YOLOv8", frame)
     if cv2.waitKey(1)&0xFF==27:
         break
+    
 cap.release()
 cv2.destroyAllWindows()
 
